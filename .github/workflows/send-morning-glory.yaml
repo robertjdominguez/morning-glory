@@ -1,0 +1,29 @@
+name: Send Morning Glory
+
+on:
+  schedule:
+    - cron: "0 10 * * 1-5" # 5:00 AM CST (10:00 UTC), Monday through Friday
+  workflow_dispatch:
+
+jobs:
+  run-go-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "stable"
+
+      - name: Run Go Script
+        env:
+          TODOIST_API_KEY: ${{ secrets.TODOIST_API_KEY }}
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          TO_EMAIL: ${{ secrets.TO_EMAIL }}
+          PROMPT: ${{ secrets.PROMPT }}
+        run: go run main.go
